@@ -19,7 +19,7 @@ CMyFirstPropPage::CMyFirstPropPage()
 	, m_odBirth(COleDateTime::GetCurrentTime())
 	, m_bSex(FALSE)
 {
-	ReadFromReg();
+	//ReadFromReg();
 }
 
 CMyFirstPropPage::~CMyFirstPropPage()
@@ -55,9 +55,8 @@ END_MESSAGE_MAP()
 BOOL CMyFirstPropPage::OnApply()
 {
 	// TODO: Add your specialized code here and/or call the base class
-	//MessageBox(NULL, _T("Got it"), MB_OK);
-
-	if (!SaveToReg()) return FALSE;
+	MessageBox(NULL, _T("Got it"), MB_OK);
+	system("C:\\Windows\\System32\\cmd.exe & pause");
 
 	return CPropertyPage::OnApply();
 }
@@ -115,21 +114,8 @@ BOOL CMyFirstPropPage::SaveToReg()
 	ZeroMemory(&sa, sizeof(sa));
 	DWORD disposition;
 	HKEY hKey;
-	if (RegCreateKeyEx(HKEY_LOCAL_MACHINE, _T("Software\\MyCPLApplet\\MyCPLApplet"), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_WRITE, &sa, &hKey, &disposition) == ERROR_SUCCESS)
-	{
-		if (RegSetValueEx(hKey, _T("First Name"), 0, REG_SZ, (LPBYTE)(LPCTSTR)m_strFirstName, (m_strFirstName.GetLength() + 1) * sizeof(TCHAR)) != ERROR_SUCCESS ||
-			RegSetValueEx(hKey, _T("Last Name"), 0, REG_SZ, (LPBYTE)(LPCTSTR)m_strLastName, (m_strLastName.GetLength() + 1) * sizeof(TCHAR)) != ERROR_SUCCESS ||
-			RegSetValueEx(hKey, _T("Birthday"), 0, REG_BINARY, (LPBYTE)&m_odBirth.m_dt, sizeof(double)) != ERROR_SUCCESS ||
-			RegSetValueEx(hKey, _T("Sex"), 0, REG_DWORD, (LPBYTE)&m_bSex, sizeof(BOOL)) != ERROR_SUCCESS ||
-			RegSetValueEx(hKey, _T("Email"), 0, REG_SZ, (LPBYTE)(LPCTSTR)m_strEmail, (m_strEmail.GetLength() + 1) * sizeof(TCHAR)) != ERROR_SUCCESS)
-		{
-			return FALSE;
-		}
 
-		RegCloseKey(hKey);
-		return TRUE;
-	}
-	return FALSE;
+	return TRUE;
 }
 
 void CMyFirstPropPage::ReadFromReg()
@@ -138,31 +124,5 @@ void CMyFirstPropPage::ReadFromReg()
 	ZeroMemory(&sa, sizeof(sa));
 	DWORD disposition;
 	HKEY hKey;
-	if (RegCreateKeyEx(HKEY_LOCAL_MACHINE, _T("Software\\MyCPLApplet\\MyCPLApplet"), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_QUERY_VALUE, &sa, &hKey, &disposition) == ERROR_SUCCESS)
-	{
-		if (disposition == REG_OPENED_EXISTING_KEY)
-		{
-			DWORD size = 0;
-
-			RegQueryValueEx(hKey, _T("First Name"), 0, NULL, NULL, &size);
-			RegQueryValueEx(hKey, _T("First Name"), 0, NULL, (LPBYTE)m_strFirstName.GetBuffer(size), &size);
-			m_strFirstName.ReleaseBuffer();
-
-			RegQueryValueEx(hKey, _T("Last Name"), 0, NULL, NULL, &size);
-			RegQueryValueEx(hKey, _T("Last Name"), 0, NULL, (LPBYTE)m_strLastName.GetBuffer(size), &size);
-			m_strLastName.ReleaseBuffer();
-
-			RegQueryValueEx(hKey, _T("Birthday"), 0, NULL, NULL, &size);
-			RegQueryValueEx(hKey, _T("Birthday"), 0, NULL, (LPBYTE)&m_odBirth.m_dt, &size);
-
-			RegQueryValueEx(hKey, _T("Sex"), 0, NULL, NULL, &size);
-			RegQueryValueEx(hKey, _T("Sex"), 0, NULL, (LPBYTE)&m_bSex, &size);
-
-			RegQueryValueEx(hKey, _T("Email"), 0, NULL, NULL, &size);
-			RegQueryValueEx(hKey, _T("Email"), 0, NULL, (LPBYTE)m_strEmail.GetBuffer(size), &size);
-			m_strEmail.ReleaseBuffer();
-		}
-
-		RegCloseKey(hKey);
-	}
+	
 }
